@@ -54,17 +54,17 @@
         })
 
         sendImage.addEventListener("click", async ()=> {
-            console.log(fileBrand.files[0])
+            console.log(webpImage.name)
 
             const api = 'https://assets.digicorp.com.bo/upload_brand_image.php';
 
             let formData = new FormData();
+            formData.append("file", webpImage, webpImage.name);
 
-            formData.append("file", fileBrand.files[0]);
             await fetch(api, {
                 mode: "no-cors",
                 method: "POST",
-                headers: { 'Content-Type': 'multipart/form-data' },
+                //headers: { 'Content-Type': 'multipart/form-data' },
                 body: formData
             });
             console.log('The file has been uploaded successfully.');
