@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="brand-file" class="form-contron-file" accept=".jpg,.jpg,.png"/>
+    <div id="BrandWepb">
+        <img src="" alt="" id="brand-image" />
+    </div>
+    <script>
+        const fileBrand = document.getElementById('brand-file')
+        const brandImage = document.querySelector("#brand-image")
+        const reader = new FileReader()
+        let webpImage = ""
+        
+        fileBrand.addEventListener("change", () => {
+
+            const fileName = fileBrand.files[0].name.slice(0, -4)
+            console.log(fileBrand.files[0])
+            reader.readAsDataURL(fileBrand.files[0])
+            reader.onload = e => {
+                const image = new Image()
+                image.src = e.target.result
+                image.onload = () => {
+                    const {
+                        height,
+                        width
+                    } = image;
+
+                    if(height != 200 || width != 400){
+                        alert("Las medidas para subir una imagen debe ser de 400x200px");
+                        return false;
+                    }
+
+                    const canvas = document.createElement('canvas')                    
+                    canvas.width = image.naturalWidth
+                    canvas.height = image.naturalHeight
+
+                    canvas.getContext('2d').drawImage(image, 0, 0)
+                    canvas.toBlob((blob) => {
+                        webpImage = new File([blob],  `${fileName}.webp`, {type: blob.type})
+                        console.log(webpImage)
+                        brandImage.src = URL.createObjectURL(webpImage)
+                    }, 'image/webp')
+                    //console.log(webpImage)
+                }
+                
+            }
+            //console.log(webpImage)
+        })
+
+    </script>
+</body>
+</html>
