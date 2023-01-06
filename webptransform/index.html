@@ -7,20 +7,20 @@
     <title>Document</title>
 </head>
 <body>
-    <input type="file" id="brand-file" class="form-contron-file" accept=".jpg,.jpg,.png"/>
+    <input type="file" id="file" class="form-contron-file" accept=".jpg,.jpg,.png"/> 
+    <button type="submit" id="send-image" disabled >Enviar</button>
     <div id="BrandWepb">
         <img src="" alt="" id="brand-image" />
     </div>
     <script>
-        const fileBrand = document.getElementById('brand-file')
+        const fileBrand = document.getElementById('file')
+        const sendImage = document.getElementById("send-image")
         const brandImage = document.querySelector("#brand-image")
         const reader = new FileReader()
         let webpImage = ""
         
         fileBrand.addEventListener("change", () => {
-
             const fileName = fileBrand.files[0].name.slice(0, -4)
-            console.log(fileBrand.files[0])
             reader.readAsDataURL(fileBrand.files[0])
             reader.onload = e => {
                 const image = new Image()
@@ -41,18 +41,34 @@
                     canvas.height = image.naturalHeight
 
                     canvas.getContext('2d').drawImage(image, 0, 0)
+                    
                     canvas.toBlob((blob) => {
                         webpImage = new File([blob],  `${fileName}.webp`, {type: blob.type})
-                        console.log(webpImage)
                         brandImage.src = URL.createObjectURL(webpImage)
+                        sendImage.disabled = false
                     }, 'image/webp')
                     //console.log(webpImage)
                 }
-                
             }
-            //console.log(webpImage)
+
         })
 
+        sendImage.addEventListener("click", async ()=> {
+            console.log(fileBrand.files[0])
+
+            const api = 'https://assets.digicorp.com.bo/upload_brand_image.php';
+
+            let formData = new FormData();
+
+            formData.append("file", fileBrand.files[0]);
+            await fetch(api, {
+                mode: "no-cors",
+                method: "POST",
+                headers: { 'Content-Type': 'multipart/form-data' },
+                body: formData
+            });
+            console.log('The file has been uploaded successfully.');
+        })
     </script>
 </body>
 </html>
